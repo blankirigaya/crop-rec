@@ -1,24 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Document</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-    <div class="navbar"><img src="assets/Field-Sense.png" height="150px" alt="" srcset=""></div>
-    <div class="landing-page">
-        <div class="search-container">hi</div>
-        <div class="graph-container">
-            <div class="rainfall-chart"></div>
-            <div class="ph-graph"></div>
-        </div>
-        <div class="crop-recommendation">hi</div>
 
+<body>
+  <div class="navbar"><img src="assets/Field-Sense.png" height="150px" alt="" srcset=""></div>
+  <div class="landing-page">
+    <div class="search-container">
+      <h1>Crop Recommendation</h1>
+       <div class="search-box">
+        <input id="cityInput" type="text" placeholder="Enter city name.....">
+        <button onclick="searchCity()">Search</button>
+      </div>
     </div>
-  
-  
+    <div class="graph-container">
+      <div class="rainfall-chart"></div>
+      <div class="ph-graph"></div>
+    </div>
+    <div class="crop-recommendation">hi</div>
+
+  </div>
+
+
   <script src="script.js"></script>
 </body>
+
 </html>
