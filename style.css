@@ -107,4 +107,27 @@ ul {
 .search-box button:active {
   transform: scale(0.95);
 }
-
+.search-bottom{
+  margin-top: 30px;
+  display: flex;
+  gap: 10px;
+}
+.search-bottom .weather{
+  border: 2px solid rgb(90, 177, 93);  
+  height: 530px;
+  width: 220px;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 10px;
+}
+.search-bottom .soil{
+  border: 2px solid rgb(90, 177, 93);  
+  height: 530px;
+  width: 220px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
+}
