@@ -21,13 +21,26 @@ ul {
   height: 100px;
   display: flex;
   align-items: center;
+  justify-content: center;
 }
 
 .landing-page {
   height: 100vh;
   width: 100vw;
   display: flex;
-  align-items: center;
-  justify-content: center;
   gap: 10px;
+  padding: 40px;
+}
+.search-container{
+    height: 90%;
+    width: 30%;
+    border-radius: 10px;
+    border: 2px solid rgb(90, 177, 93);
+}
+.graph-container{
+    height: 90%;
+    width: 50%;
+    border-radius: 10px;
+    border: 2px solid rgb(90, 177, 93);
+
 }
