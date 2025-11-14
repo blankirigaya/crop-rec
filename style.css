@@ -32,6 +32,7 @@ ul {
   padding: 40px;
 }
 .search-container {
+  overflow: hidden;
   height: 90%;
   width: 30%;
   border-radius: 10px;
@@ -130,4 +131,8 @@ ul {
   display: flex;
   justify-content: center;
   padding-top: 10px;
+}
+.details{
+  display: flex;
+  flex-direction: column;
 }
