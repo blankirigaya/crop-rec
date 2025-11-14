@@ -108,13 +108,13 @@ ul {
 .search-box button:active {
   transform: scale(0.95);
 }
-.search-bottom{
+.search-bottom {
   margin-top: 30px;
   display: flex;
   gap: 10px;
 }
-.search-bottom .weather{
-  border: 2px solid rgb(90, 177, 93);  
+.search-bottom .weather {
+  border: 2px solid rgb(90, 177, 93);
   height: 530px;
   width: 220px;
   border-radius: 10px;
@@ -123,8 +123,8 @@ ul {
   align-items: center;
   padding-top: 10px;
 }
-.search-bottom .soil{
-  border: 2px solid rgb(90, 177, 93);  
+.search-bottom .soil {
+  border: 2px solid rgb(90, 177, 93);
   height: 530px;
   width: 220px;
   border-radius: 10px;
@@ -132,7 +132,15 @@ ul {
   justify-content: center;
   padding-top: 10px;
 }
-.details{
+.details {
   display: flex;
   flex-direction: column;
+  background-color: rgb(41, 99, 38);
+  border-radius: 10px;
+  padding: 8px;
+  height: 40%;
+  text-align: center;
+  color: #f2f2f2;
+  align-items: center;
+  margin-top: 80px;
 }
