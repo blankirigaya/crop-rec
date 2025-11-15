@@ -1,6 +1,5 @@
-// =============================
-//  CROP DATASET
-// =============================
+// logic for crop recommendation based on weather and soil data
+//the ideal conditions for various crops
 const crops = [
   {
     name: "Rice",
@@ -145,16 +144,11 @@ const crops = [
 
 ];
 
+//function to recommend crops based on current conditions
 
-
-
-// =============================
-//  TOP 3 RECOMMENDATION LOGIC
-// =============================
 function recommendCrop(temp, humidity, rainfall, ph) {
   if (!ph) return ["No soil data available"];
 
-  // scoring will go here
     const crops = [
     { name: "Rice", temp: 28, humidity: 70, rainfall: 200, ph: 5.5 },
     { name: "Wheat", temp: 20, humidity: 55, rainfall: 100, ph: 6.8 },

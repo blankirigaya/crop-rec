@@ -24,8 +24,8 @@
           </div>
           <div class="details">
             <p>Temperature: <br> <span>--</span>°C</p>
-            <p>Humidity: <br><span>--</span></p>
-            <p>Rainfall: <br><span>--</span></p>
+            <p>Humidity: <br><span>--</span>%</p>
+            <p>Rainfall: <br><span>--</span>mm/hr</p>
           </div>
         </div>
         <div class="soil">
@@ -36,19 +36,23 @@
       </div>
     </div>
     <div class="graph-container">
-      <div class="ph-graph"></div>
-      <div class="rainfall-chart"></div>
+      <div class="chart-wrapper">
+        <div class="ph-graph"></div>
+      </div>
+      <div class="chart-wrapper">
+        <div class="rainfall-chart"></div>
+      </div>
     </div>
     <div class="crop-recommendation" role="region" aria-label="Crop recommendations">
       <div class="placeholder">No recommendation yet. Search a city to get started.</div>
     </div>
   </div>
 
-  <!-- Load Chart.js from CDN -->
+  <!-- all the loads  -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
   
   <script src="cropLogic.js"></script>
-  <script src="script.js">console.log(averagerainfall)</script>
+  <script src="script.js"></script>
 
 </body>
 
