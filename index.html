@@ -14,10 +14,12 @@
     <div class="search-container">
       <h1>Crop Recommendation</h1>
       <div class="search-box">
-        <input id="cityInput" type="text" placeholder="Enter city name.....">
+        <div class="autocomplete-wrapper">
+          <input id="cityInput" type="text" placeholder="Enter city name....." autocomplete="off">
+          <ul class="suggestions-list" id="suggestionsList"></ul>
+        </div>
         <button id="searchBtn">Search</button>
-      </div>
-      <div class="search-bottom">
+      </div>   <div class="search-bottom">
         <div class="soil">
           <div class="weather-head">
             <h2>Weather</h2>

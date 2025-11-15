@@ -9,79 +9,19 @@ const CHART_CONFIG = {
   PH_GAUGE: { width: 350, height: 250 },
   RAINFALL_BAR: { width: 450, height: 280 }
 };
+async function fetchCityList() {
+  try {
+    // This fetches './india_soil_ph_data.json'
+    const response = await fetch(API.SOIL_DATA); 
+    const data = await response.json();
 
-const CROP_REQUIREMENTS = {
-  rice: { 
-    tempRange: [20, 35], 
-    humidityMin: 50, 
-    rainfallMin: 100, 
-    phRange: [5.5, 7.0],
-    description: "Rice thrives in warm, humid climates with abundant water supply"
-  },
-  wheat: { 
-    tempRange: [15, 25], 
-    humidityMin: 40, 
-    rainfallMin: 50, 
-    phRange: [6.0, 7.5],
-    description: "Wheat grows best in cool to moderate temperatures with well-drained soil"
-  },
-  maize: { 
-    tempRange: [20, 30], 
-    humidityMin: 50, 
-    rainfallMin: 60, 
-    phRange: [5.5, 7.5],
-    description: "Maize requires warm weather and moderate rainfall during growing season"
-  },
-  cotton: { 
-    tempRange: [21, 35], 
-    humidityMin: 50, 
-    rainfallMin: 50, 
-    phRange: [6.0, 8.0],
-    description: "Cotton needs long sunny periods and warm temperatures throughout growth"
-  },
-  sugarcane: { 
-    tempRange: [20, 35], 
-    humidityMin: 70, 
-    rainfallMin: 150, 
-    phRange: [6.0, 7.5],
-    description: "Sugarcane demands high temperatures, humidity and heavy rainfall"
-  },
-  potato: { 
-    tempRange: [15, 25], 
-    humidityMin: 70, 
-    rainfallMin: 50, 
-    phRange: [5.0, 6.5],
-    description: "Potatoes prefer cool temperatures and slightly acidic, well-drained soil"
-  },
-  tomato: { 
-    tempRange: [18, 27], 
-    humidityMin: 60, 
-    rainfallMin: 60, 
-    phRange: [6.0, 7.0],
-    description: "Tomatoes need warm days, cool nights and consistent moisture levels"
-  },
-  soybean: { 
-    tempRange: [20, 30], 
-    humidityMin: 60, 
-    rainfallMin: 50, 
-    phRange: [6.0, 7.0],
-    description: "Soybeans grow well in warm climates with adequate summer rainfall"
-  },
-  barley: { 
-    tempRange: [12, 20], 
-    humidityMin: 40, 
-    rainfallMin: 40, 
-    phRange: [6.5, 7.5],
-    description: "Barley adapts to cooler climates and can tolerate drought conditions"
-  },
-  millet: { 
-    tempRange: [25, 35], 
-    humidityMin: 40, 
-    rainfallMin: 30, 
-    phRange: [5.5, 7.0],
-    description: "Millet is highly drought-resistant and thrives in hot, arid conditions"
+    // This accesses the "soil_data" array inside your JSON
+    const citySet = new Set(data.soil_data.map(item => item.city));
+    allCityNames = [...citySet].sort();
+  } catch (error) {
+    console.error("Failed to load city list for suggestions:", error);
   }
-};
+}
 
 let charts = {
   soil: null,
@@ -89,13 +29,16 @@ let charts = {
 };
 
 
-document.getElementById("searchBtn").addEventListener("click", handleSearch);
+
+searchBtn.addEventListener("click", handleSearch);
 
 //search handler
 
 async function handleSearch() {
-  const city = document.getElementById("cityInput").value.trim();
+  suggestionsList.classList.remove('active'); // Hide suggestions
+  suggestionsList.innerHTML = ''; // Clear suggestions
   
+  const city = cityInput.value.trim();
   if (!city) {
     alert("Enter a city name");
     return;
@@ -591,3 +534,85 @@ function getPhCategory(ph) {
   if (ph <= 8.0) return 'Slightly Alkaline';
   return 'Alkaline';
 }
+
+// --- Autocomplete Suggestion Logic ---
+
+/**
+ * Fetches the list of city names from the JSON data on page load
+ * to populate the autocomplete suggestions.
+ */
+async function fetchCityList() {
+  try {
+    const response = await fetch(API.SOIL_DATA); // Uses your JSON file
+    const data = await response.json();
+    // Use a Set to get unique city names from your file's structure
+    const citySet = new Set(data.soil_data.map(item => item.city));
+    allCityNames = [...citySet].sort();
+  } catch (error) {
+    console.error("Failed to load city list for suggestions:", error);
+  }
+}
+
+/**
+ * Displays the filtered suggestions in the dropdown list.
+ * @param {string[]} suggestions - Array of city names to display.
+ * @param {string} inputValue - The text the user typed, for highlighting.
+ */
+function showSuggestions(suggestions, inputValue) {
+  suggestionsList.innerHTML = ''; // Clear old suggestions
+  
+  if (suggestions.length === 0) {
+    suggestionsList.classList.remove('active');
+    return;
+  }
+
+  suggestions.forEach(city => {
+    const li = document.createElement('li');
+    
+    // Create the highlighted text
+    const regex = new RegExp(inputValue, 'gi'); // 'gi' = global, case-insensitive
+    const highlightedText = city.replace(regex, (match) => `<span class="suggestion-highlight">${match}</span>`);
+    li.innerHTML = highlightedText;
+    
+    // Add click event to select a suggestion
+    li.addEventListener('click', () => {
+      cityInput.value = city; // Set input value to clicked city
+      suggestionsList.classList.remove('active'); // Hide list
+      suggestionsList.innerHTML = ''; // Clear list
+      handleSearch(); // Automatically trigger the search
+    });
+    
+    suggestionsList.appendChild(li);
+  });
+
+  suggestionsList.classList.add('active'); // Show the list
+}
+
+// --- Event Listeners for Autocomplete ---
+
+// Listen for user typing in the city input
+cityInput.addEventListener('input', () => {
+  const inputValue = cityInput.value.trim().toLowerCase();
+  
+  // Only show suggestions if 2 or more characters are typed
+  if (inputValue.length < 2) {
+    suggestionsList.classList.remove('active');
+    suggestionsList.innerHTML = '';
+    return;
+  }
+
+  // Filter city names based on user input
+  const filteredSuggestions = allCityNames.filter(city => 
+    city.toLowerCase().includes(inputValue)
+  ).slice(0, 10); // Limit to 10 suggestions
+
+  showSuggestions(filteredSuggestions, inputValue);
+});
+
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.autocomplete-wrapper')) {
+    suggestionsList.classList.remove('active');
+  }
+});
+
+fetchCityList();

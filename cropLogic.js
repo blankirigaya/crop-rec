@@ -1,192 +1,147 @@
-// logic for crop recommendation based on weather and soil data
-//the ideal conditions for various crops
-const crops = [
-  {
-    name: "Rice",
-    temp: 28,
-    humidity: 70,
-    rainfall: 200,
-    ph: 5.5
+// This is the single source of truth for all crop data.
+// We moved it here from script.js
+const CROP_REQUIREMENTS = {
+  rice: { 
+    tempRange: [20, 35], 
+    humidityMin: 50, 
+    rainfallMin: 100, 
+    phRange: [5.5, 7.0],
+    description: "Rice thrives in warm, humid climates with abundant water supply"
   },
-  {
-    name: "Wheat",
-    temp: 20,
-    humidity: 55,
-    rainfall: 100,
-    ph: 6.8
+  wheat: { 
+    tempRange: [15, 25], 
+    humidityMin: 40, 
+    rainfallMin: 50, 
+    phRange: [6.0, 7.5],
+    description: "Wheat grows best in cool to moderate temperatures with well-drained soil"
   },
-  {
-    name: "Maize",
-    temp: 26,
-    humidity: 60,
-    rainfall: 120,
-    ph: 7.0
+  maize: { 
+    tempRange: [20, 30], 
+    humidityMin: 50, 
+    rainfallMin: 60, 
+    phRange: [5.5, 7.5],
+    description: "Maize requires warm weather and moderate rainfall during growing season"
   },
-  {
-    name: "Sugarcane",
-    temp: 30,
-    humidity: 75,
-    rainfall: 150,
-    ph: 6.5
+  cotton: { 
+    tempRange: [21, 35], 
+    humidityMin: 50, 
+    rainfallMin: 50, 
+    phRange: [6.0, 8.0],
+    description: "Cotton needs long sunny periods and warm temperatures throughout growth"
   },
-  {
-    name: "Cotton",
-    temp: 27,
-    humidity: 65,
-    rainfall: 80,
-    ph: 7.8
+  sugarcane: { 
+    tempRange: [20, 35], 
+    humidityMin: 70, 
+    rainfallMin: 150, 
+    phRange: [6.0, 7.5],
+    description: "Sugarcane demands high temperatures, humidity and heavy rainfall"
   },
-  {
-    name: "Millet",
-    temp: 30,
-    humidity: 50,
-    rainfall: 60,
-    ph: 6.0
+  potato: { 
+    tempRange: [15, 25], 
+    humidityMin: 70, 
+    rainfallMin: 50, 
+    phRange: [5.0, 6.5],
+    description: "Potatoes prefer cool temperatures and slightly acidic, well-drained soil"
   },
-  {
-    name: "Barley",
-    temp: 18,
-    humidity: 55,
-    rainfall: 90,
-    ph: 6.5
+  tomato: { 
+    tempRange: [18, 27], 
+    humidityMin: 60, 
+    rainfallMin: 60, 
+    phRange: [6.0, 7.0],
+    description: "Tomatoes need warm days, cool nights and consistent moisture levels"
   },
-  {
-    name: "Sorghum",
-    temp: 32,
-    humidity: 45,
-    rainfall: 70,
-    ph: 6.2
+  soybean: { 
+    tempRange: [20, 30], 
+    humidityMin: 60, 
+    rainfallMin: 50, 
+    phRange: [6.0, 7.0],
+    description: "Soybeans grow well in warm climates with adequate summer rainfall"
   },
-  {
-    name: "Groundnut",
-    temp: 27,
-    humidity: 60,
-    rainfall: 110,
-    ph: 6.8
+  barley: { 
+    tempRange: [12, 20], 
+    humidityMin: 40, 
+    rainfallMin: 40, 
+    phRange: [6.5, 7.5],
+    description: "Barley adapts to cooler climates and can tolerate drought conditions"
   },
-  {
-    name: "Soybean",
-    temp: 24,
-    humidity: 65,
-    rainfall: 140,
-    ph: 6.5
-  },
-  {
-  name: "Chickpea",
-  temp: 22,
-  humidity: 45,
-  rainfall: 60,
-  ph: 7.0
-},
-{
-  name: "Pigeon Pea",
-  temp: 28,
-  humidity: 50,
-  rainfall: 90,
-  ph: 6.3
-},
-{
-  name: "Mustard",
-  temp: 18,
-  humidity: 40,
-  rainfall: 50,
-  ph: 7.2
-},
-{
-  name: "Green Gram (Moong)",
-  temp: 27,
-  humidity: 55,
-  rainfall: 80,
-  ph: 6.5
-},
-{
-  name: "Black Gram (Urad)",
-  temp: 30,
-  humidity: 60,
-  rainfall: 100,
-  ph: 6.0
-},
-{
-  name: "Jute",
-  temp: 29,
-  humidity: 80,
-  rainfall: 150,
-  ph: 6.4
-},
-{
-  name: "Tea",
-  temp: 22,
-  humidity: 85,
-  rainfall: 220,
-  ph: 5.0
-},
-{
-  name: "Coffee",
-  temp: 24,
-  humidity: 70,
-  rainfall: 180,
-  ph: 6.0
-},
-{
-  name: "Potato",
-  temp: 17,
-  humidity: 60,
-  rainfall: 100,
-  ph: 5.8
-},
-{
-  name: "Tomato",
-  temp: 25,
-  humidity: 65,
-  rainfall: 90,
-  ph: 6.0
-}
+  millet: { 
+    tempRange: [25, 35], 
+    humidityMin: 40, 
+    rainfallMin: 30, 
+    phRange: [5.5, 7.0],
+    description: "Millet is highly drought-resistant and thrives in hot, arid conditions"
+  }
+};
 
-];
 
-//function to recommend crops based on current conditions
-
+/**
+ * Recommends crops based on current conditions.
+ * This function now uses the CROP_REQUIREMENTS object.
+ */
 function recommendCrop(temp, humidity, rainfall, ph) {
   if (!ph) return ["No soil data available"];
 
-    const crops = [
-    { name: "Rice", temp: 28, humidity: 70, rainfall: 200, ph: 5.5 },
-    { name: "Wheat", temp: 20, humidity: 55, rainfall: 100, ph: 6.8 },
-    { name: "Maize", temp: 26, humidity: 60, rainfall: 120, ph: 7.0 },
-    { name: "Sugarcane", temp: 30, humidity: 75, rainfall: 150, ph: 6.5 },
-    { name: "Cotton", temp: 27, humidity: 65, rainfall: 80, ph: 7.8 },
-    { name: "Millet", temp: 30, humidity: 50, rainfall: 60, ph: 6.0 },
-    { name: "Barley", temp: 18, humidity: 55, rainfall: 90,  ph: 6.5 },
-    { name: "Sorghum", temp: 32, humidity: 45, rainfall: 70,  ph: 6.2 },
-    { name: "Groundnut", temp: 27, humidity: 60, rainfall: 110, ph: 6.8 },
-    { name: "Soybean", temp: 24, humidity: 65, rainfall: 140, ph: 6.5 },
-    { name: "Chickpea", temp: 22, humidity: 45, rainfall: 60,  ph: 7.0 },
-    { name: "Pigeon Pea", temp: 28, humidity: 50, rainfall: 90,  ph: 6.3 },
-    { name: "Mustard", temp: 18, humidity: 40, rainfall: 50,  ph: 7.2 },
-    { name: "Green Gram (Moong)", temp: 27, humidity: 55, rainfall: 80, ph: 6.5 },
-    { name: "Black Gram (Urad)", temp: 30, humidity: 60, rainfall: 100, ph: 6.0 },
-    { name: "Jute", temp: 29, humidity: 80, rainfall: 150, ph: 6.4 },
-    { name: "Tea", temp: 22, humidity: 85, rainfall: 220, ph: 5.0 },
-    { name: "Coffee", temp: 24, humidity: 70, rainfall: 180, ph: 6.0 },
-    { name: "Potato", temp: 17, humidity: 60, rainfall: 100, ph: 5.8 },
-    { name: "Tomato", temp: 25, humidity: 65, rainfall: 90, ph: 6.0 }
-  ];
+  /**
+   * Scores a crop based on how far the current conditions are
+   * from the ideal ranges. A lower score is better.
+   */
+  function score(cropName) {
+    const req = CROP_REQUIREMENTS[cropName];
+    if (!req) return Infinity; // Should not happen
 
-    function score(crop) {
-    const tempDiff = Math.abs(temp - crop.temp);
-    const humidityDiff = Math.abs(humidity - crop.humidity);
-    const rainDiff = Math.abs(rainfall - crop.rainfall);
-    const phDiff = Math.abs(ph - crop.ph);
+    let penalty = 0; // Lower is better
 
-    return tempDiff + humidityDiff + rainDiff + phDiff;
+    // Temperature penalty (as a percentage of the ideal range's midpoint)
+    const tempMid = (req.tempRange[0] + req.tempRange[1]) / 2;
+    if (temp < req.tempRange[0]) {
+      penalty += (req.tempRange[0] - temp) / tempMid;
+    } else if (temp > req.tempRange[1]) {
+      penalty += (temp - req.tempRange[1]) / tempMid;
+    }
+
+    // Humidity penalty (percentage deviation)
+    if (humidity < req.humidityMin) {
+      penalty += (req.humidityMin - humidity) / req.humidityMin;
+    }
+
+    // Rainfall penalty (percentage deviation from monthly minimum)
+    // We must convert the hourly rainfall average to a monthly estimate
+    const monthlyRainfall = rainfall * 24 * 30;
+    if (monthlyRainfall < req.rainfallMin) {
+      // Avoid division by zero if rainfallMin is 0
+      if (req.rainfallMin > 0) {
+        penalty += (req.rainfallMin - monthlyRainfall) / req.rainfallMin;
+      } else if (monthlyRainfall > 0) {
+        // Penalize for *any* rain if min is 0 (unlikely case)
+        penalty += 0.1; 
+      }
+    }
+
+    // pH penalty (as a percentage of the ideal range's midpoint)
+    const phMid = (req.phRange[0] + req.phRange[1]) / 2;
+    if (ph < req.phRange[0]) {
+      penalty += (req.phRange[0] - ph) / phMid;
+    } else if (ph > req.phRange[1]) {
+      penalty += (ph - req.phRange[1]) / phMid;
+    }
+
+    return penalty;
   }
-    const scored = crops.map(crop => ({
-    name: crop.name,
-    score: score(crop)
+
+  // Score all crops defined in CROP_REQUIREMENTS
+  const scored = Object.keys(CROP_REQUIREMENTS).map(cropName => ({
+    name: cropName,
+    score: score(cropName)
   }));
 
+  // Sort by score (lowest penalty is best)
   scored.sort((a, b) => a.score - b.score);
 
-  return scored.slice(0, 3).map(c => c.name);
-
+  // Return the top 3 crop names, capitalized for the UI
+  return scored.slice(0, 3).map(c => {
+    // Capitalize: "rice" -> "Rice"
+    return c.name.charAt(0).toUpperCase() + c.name.slice(1);
+  });
 }
+
+// NOTE: The extra '}' at the end of the original file has been REMOVED.
